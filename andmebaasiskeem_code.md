@@ -1,3 +1,4 @@
+main code
 ```sql
 create database RetseptRus
 use RetseptRus
@@ -157,13 +158,24 @@ BEGIN
     EXEC (@sqltegevus);
 END;
 
-EXEC muudatabel 'drop', 'toiduaine', 'toiduaine_kogus'
-select * from 
+EXEC muudatabel 'drop', 'yhik', 'kogus'
+select * from yhik
 
 --select-päringud
+--1
 SELECT kasutaja.eesnimi, retsept.retsept_nimi
 FROM kasutaja, retsept
 WHERE kasutaja.kasutaja_id = retsept.kasutaja_id;
+--2
+SELECT retsept.retsept_nimi, toiduaine.toiduaine_nimi, koostis.kogus, yhik.yhik_nimi
+FROM retsept, toiduaine, koostis, yhik
+WHERE koostis.retsept_id = retsept.retsept_id
+AND koostis.toiduaine_id = toiduaine.toiduaine_id
+AND koostis.yhik_id = yhik.yhik_id;
+--3
+SELECT retsept.retsept_nimi, tehtud.tehtud_kp
+FROM retsept, tehtud
+WHERE tehtud.retsept_id = retsept.retsept_id;
 
 --oma tabel
 create table kasutaja_tehtud(
@@ -229,10 +241,12 @@ GRANT SELECT ON kategooria TO managerR;
 GRANT SELECT ON toiduaine TO managerR;
 
 GRANT SELECT ON retsept TO managerR;
+GRANT INSERT ON retsept TO managerR;
 GRANT UPDATE ON retsept TO managerR;
 GRANT DELETE ON retsept TO managerR;
 
 GRANT SELECT ON koostis TO managerR;
+GRANT INSERT ON koostis TO managerR;
 GRANT UPDATE ON koostis TO managerR;
 GRANT DELETE ON koostis TO managerR;
 
@@ -242,4 +256,60 @@ GRANT SELECT ON kasutaja_tehtud TO managerR;
 
 DENY INSERT ON toiduaine TO managerR;
 DENY INSERT ON kasutaja TO managerR;
+```
+
+
+staff code
+```sql
+--staffR
+--omab ligipääsu tabelitele: toiduaine, kategooria, kasutaja
+select * from toiduaine 
+select * from kategooria
+select * from kasutaja
+
+--tohib lisada ja vaadata toiduaineid ja kategooriaid
+insert into toiduaine
+values('Kurk')
+
+insert into kategooria
+values('inimene')
+
+--ei tohi muuta ega kustutada toiduaineid ja kategooriaid
+DELETE FROM toiduaine WHERE toiduaine_id = 1;
+UPDATE toiduaine SET toiduaine_nimi = 'Muudetud' WHERE toiduaine_id = 1;
+
+DELETE FROM kategooria WHERE kategooria_id = 1;
+UPDATE kategooria SET kategooria_nimi = 'Muudetud' WHERE kategooria_id = 1;
+
+DROP TABLE toiduaine;
+```
+
+managerR code
+```sql
+--managerR
+--omab ligipääsu kõigile tabelitele
+SELECT * FROM retsept;
+
+INSERT INTO retsept (retsept_nimi, kirjeldus, juhend, sisestatud_kp, kasutaja_id, kategooria_id) 
+VALUES ('TestRetsept', 'Test', 'Test', GETDATE(), 1, 1);
+
+UPDATE retsept SET retsept_nimi = 'Muudetud' WHERE retsept_id = 6;
+
+DELETE FROM retsept WHERE retsept_nimi = 'Muudetud';
+
+--ei tohi lisada uusi toiduaineid (toiduaine) ega uusi kasutajaid (kasutaja)
+INSERT INTO toiduaine (toiduaine_nimi)
+VALUES ('UusToiduaine');
+INSERT INTO kasutaja (eesnimi, perenimi, email)
+VALUES ('Uus', 'Kasutaja', 'uus@test.com');
+
+--omab täielikku haldusõigust retseptidega seotud tabelites (retsept ja koostis)
+SELECT * FROM koostis;
+
+insert into koostis
+values(5055, 1, 1, 1)
+
+delete from koostis where kogus=5055
+
+DROP TABLE toiduaine;
 ```
