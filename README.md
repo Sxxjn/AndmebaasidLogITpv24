@@ -1,6 +1,6 @@
 ## Ruslan Gergankin - Andmebaaside konspekt
 
-[Põhimõisted](README.md) | [Protseduurid](protseduurid.md) | [Kasutajad](kasutaja.md) | [Trugerid][(triger.md)
+[Põhimõisted](README.md) | [Protseduurid](protseduurid.md) | [Kasutajad](kasutaja.md) | [Trigerid](triger.md)
 
 andmebaaside haldusega seotud sql kood ja konspektid
 
