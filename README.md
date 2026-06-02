@@ -1,4 +1,7 @@
 ## Ruslan Gergankin - Andmebaaside konspekt
+
+[Põhimõisted](README.md) | [Protseduurid](protseduurid.md) | [Kasutajad](kasutaja.md) | [Trugerid][(triger.md)
+
 andmebaaside haldusega seotud sql kood ja konspektid
 
 ## Sisukord
